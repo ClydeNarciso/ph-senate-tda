@@ -1,0 +1,111 @@
+"Table 1. Annual Per Capita Poverty Threshold and Poverty Incidence Among Families with Measures of Precision, by Region and Province: 2018, 2021, and 2023"
+
+"Geolocation";"Poverty Incidence Among Families (%) 2018";"Poverty Incidence Among Families (%) 2021";"Poverty Incidence Among Families (%) 2023"
+"PHILIPPINES";12.1;13.2;10.9
+"..National Capital Region (NCR)";1.4;2.2;1.1
+"....1st District";1.9;1.1;1.6
+"....2nd District";1.4;1.6;0.9
+"....3rd District";2.2;3.3;1.6
+"....4th District";0.7;2.5;0.9
+"..Cordillera Administrative Region (CAR)";8.6;6.9;4.4
+"....Abra";14.7;15.8;9.4
+"....Apayao";16.0;4.7;4.0
+"....Benguet";4.2;3.9;2.5
+"....Ifugao";9.9;6.0;4.6
+"....Kalinga";9.2;5.6;2.6
+"....Mt. Province";17.1;15.3;10.5
+"..Region I (Ilocos Region)";7.0;11.0;8.4
+"....Ilocos Norte";3.1;1.7;0.3
+"....Ilocos Sur";5.5;11.5;5.2
+"....La Union";2.9;6.6;6.3
+"....Pangasinan";9.3;13.9;11.4
+"..Region II (Cagayan Valley)";12.5;11.7;7.2
+"....Batanes";6.5;2.6;3.3
+"....Cagayan";12.5;7.3;5.7
+"....Isabela";13.2;15.9;8.4
+"....Nueva Vizcaya";11.6;10.8;7.3
+"....Quirino";8.9;6.2;6.7
+"..Region III (Central Luzon)";5.2;8.3;5.7
+"....Aurora";11.8;16.5;11.0
+"....Bataan";5.8;9.0;6.6
+"....Bulacan";3.5;8.3;6.0
+"....Nueva Ecija";6.6;10.0;6.9
+"....Pampanga";2.1;2.9;1.0
+"....Tarlac";7.7;8.1;6.7
+"....Zambales";10.9;17.7;11.8
+"..Region IV-A (CALABARZON)";5.1;7.2;5.3
+"....Batangas";8.6;4.3;4.9
+"....Cavite";3.7;7.1;4.3
+"....Laguna";2.7;6.9;5.4
+"....Quezon";9.3;16.3;6.9
+"....Rizal";3.3;4.3;5.6
+"..MIMAROPA Region";10.5;15.0;16.3
+"....Marinduque";10.0;15.6;8.5
+"....Occidental Mindoro";16.1;23.0;20.6
+"....Oriental Mindoro";7.3;12.8;14.1
+"....Palawan";8.2;9.4;15.8
+"....Romblon";19.7;31.0;23.0
+"..Region V (Bicol Region)";20.0;21.9;20.3
+"....Albay";15.0;15.4;18.1
+"....Camarines Norte";22.4;16.6;17.7
+"....Camarines Sur";21.0;29.8;22.4
+"....Catanduanes";14.4;16.8;23.5
+"....Masbate";25.8;20.2;12.9
+"....Sorsogon";19.6;21.7;28.4
+"..Region VI (Western Visayas)";10.1;12.1;9.8
+"....Aklan";8.8;13.9;3.1
+"....Antique";12.9;18.2;13.8
+"....Capiz";4.1;6.1;9.8
+"....Guimaras";6.8;7.3;3.8
+"....Iloilo";12.1;12.6;11.1
+"..Negros Island Region (NIR)";15.8;18.2;22.6
+"....Negros Occidental";14.5;16.4;22.1
+"....Negros Oriental";19.4;23.6;25.1
+"....Siquijor";7.2;2.2;3.5
+"..Region VII (Central Visayas)";12.2;22.0;12.3
+"....Bohol";15.5;19.1;14.8
+"....Cebu";11.3;22.8;11.7
+"..Region VIII (Eastern Visayas)";23.9;22.2;20.3
+"....Biliran";13.7;19.9;8.5
+"....Eastern Samar";40.9;29.4;24.7
+"....Leyte";21.7;20.8;20.6
+"....Northern Samar";27.6;19.3;21.8
+"....Southern Leyte";17.3;16.0;7.1
+"....Samar";22.2;27.0;24.9
+"..Region IX (Zamboanga Peninsula)";25.4;23.4;24.2
+"....Zamboanga del Norte";36.9;40.8;37.7
+"....Zamboanga del Sur";17.4;13.4;20.0
+"....Zamboanga Sibugay";27.1;26.0;17.8
+"....Isabela City";41.6;12.7;10.0
+"..Region X (Northern Mindanao)";17.3;19.2;18.4
+"....Bukidnon";22.3;22.8;20.2
+"....Camiguin";17.9;14.7;9.4
+"....Lanao del Norte";19.0;25.5;25.2
+"....Misamis Occidental";19.5;18.3;22.6
+"....Misamis Oriental";11.4;13.0;12.0
+"..Region XI (Davao Region)";13.9;11.9;11.3
+"....Davao del Norte";10.3;7.3;7.3
+"....Davao del Sur";8.1;7.2;9.1
+"....Davao Oriental";27.7;21.8;29.1
+"....Davao de Oro";18.6;17.7;7.1
+"....Davao Occidental";31.9;34.5;19.8
+"..Region XII (SOCCSKSARGEN)";21.6;20.9;17.0
+"....Cotabato";23.6;23.6;18.0
+"....Sarangani";36.1;33.5;23.1
+"....South Cotabato";13.7;12.8;10.1
+"....Sultan Kudarat";24.3;23.8;26.4
+"..Region XIII (Caraga)";24.1;25.9;14.9
+"....Agusan del Norte";18.9;23.5;14.7
+"....Agusan del Sur";30.6;33.4;23.4
+"....Surigao del Norte";27.7;21.2;6.8
+"....Surigao del Sur";19.2;24.0;10.3
+"....Dinagat Islands";26.5;26.1;23.1
+"..Bangsamoro Autonomous Region in Muslim Mindanao (BARMM)";52.6;28.0;23.5
+"....Basilan";66.3;42.5;33.7
+"....Lanao del Sur";64.2;7.4;12.1
+"....Maguindanao";40.6;29.8;30.4
+"......Maguindanao del Norte";..;..;28.4
+"......Maguindanao del Sur";..;..;32.1
+"....Sulu";75.3;41.5;13.0
+"....Tawi-tawi";15.1;28.1;32.3
+"....Cotabato City";35.2;31.3;33.3
