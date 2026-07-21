@@ -1,0 +1,16 @@
+numpy
+pandas
+scipy
+scikit-learn
+tqdm
+joblib
+gudhi
+pyballmapper
+networkx
+persim
+matplotlib
+plotly
+kaleido
+seaborn
+ipython
+openpyxl
