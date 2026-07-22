@@ -85,7 +85,7 @@ def run_stepwise_stability(intervals_dict: dict) -> None:
     sns.despine(fig=fig)
     plt.tight_layout()
     plt.savefig(FIGURES_DIR / 'stepwise_stability.png', dpi=150, bbox_inches='tight')
-    plt.show()
+    # plt.show()
 
 
 def _run_single_ballmapper(X, eps, seed):
@@ -167,7 +167,7 @@ def run_epsilon_robustness(df_features):
                   family='sans-serif', fontsize=13, pad=15)
 
     plt.savefig(FIGURES_DIR / 'ballmapper_num_balls_robustness.jpg', bbox_inches='tight')
-    plt.show()
+    # plt.show()
 
     # PLOT 2: Average Ball Size
     fig2, ax2 = plt.subplots(figsize=(9, 5), dpi=300)
@@ -190,7 +190,7 @@ def run_epsilon_robustness(df_features):
                   family='sans-serif', fontsize=13, pad=15)
 
     plt.savefig(FIGURES_DIR / 'ballmapper_ball_size_robustness.jpg', bbox_inches='tight')
-    plt.show()
+    # plt.show()
 
 
 def _run_single_comparative_ballmapper(X_scaled, target_values, median_val, eps, seed):
@@ -324,7 +324,7 @@ def run_epsilon_comparative_robustness(df_data, target_col, vulnerable_label, ba
 
     plt.tight_layout()
     plt.savefig(FIGURES_DIR / f'{target_col}_numnodes.jpg')
-    plt.show()
+    # plt.show()
 
     # STANDALONE PLOT 2: Average Ball Size
     fig2, ax2 = plt.subplots(figsize=(9, 5), dpi=300)
@@ -349,4 +349,4 @@ def run_epsilon_comparative_robustness(df_data, target_col, vulnerable_label, ba
 
     plt.tight_layout()
     plt.savefig(FIGURES_DIR / f'{target_col}_avgnodesize.jpg')
-    plt.show()
+    # plt.show()

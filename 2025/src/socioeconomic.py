@@ -453,8 +453,8 @@ def merge_socioeconomic_data(df_features: pd.DataFrame,
         else:
             print("[\u2713] Perfect join found for Poverty Data.")
 
-        merged = pd.merge(merged, df_pov[['Province'] + pov_cols],
-                          on='Province', how='left')
+        df_pov = df_pov[['Province'] + pov_cols].drop_duplicates(subset='Province', keep='first')
+        merged = pd.merge(merged, df_pov, on='Province', how='left')
         impute_cols.extend(pov_cols)
 
     # -- NTA Dependency (2025 XLSX) --
@@ -470,6 +470,7 @@ def merge_socioeconomic_data(df_features: pd.DataFrame,
         else:
             print("[\u2713] Perfect join found for NTA Dependency Data.")
 
+        df_nta = df_nta.drop_duplicates(subset='Province', keep='first')
         merged = pd.merge(merged, df_nta, on='Province', how='left')
         impute_cols.extend(nta_cols)
 
@@ -488,6 +489,7 @@ def merge_socioeconomic_data(df_features: pd.DataFrame,
         else:
             print("[\u2713] Perfect join found for FLEMMS Data.")
 
+        df_fl = df_fl.drop_duplicates(subset='Province', keep='first')
         merged = pd.merge(merged, df_fl, on='Province', how='left')
         impute_cols.extend(fl_cols)
 
@@ -508,6 +510,7 @@ def merge_socioeconomic_data(df_features: pd.DataFrame,
         if 'Region' in df_dyn.columns:
             df_dyn = df_dyn.drop(columns=['Region'])
 
+        df_dyn = df_dyn.drop_duplicates(subset='Province', keep='first')
         merged = pd.merge(merged, df_dyn, on='Province', how='left')
 
         print("-> Imputing missing Dynasty values using local Regional Means...")

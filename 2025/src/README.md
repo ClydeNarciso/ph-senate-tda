@@ -1,6 +1,6 @@
-# 2022 Electoral Topology / Socioeconomic Analysis
+# 2025 Electoral Topology / Socioeconomic Analysis
 
-Modularized TDA + BallMapper pipeline for the **2022 Philippine midterm election**.
+Modularized TDA + BallMapper pipeline for the **2025 Philippine midterm election**.
 
 ## Structure
 
@@ -14,7 +14,6 @@ visualization.py    Topology-vs-covariate scatterplots (plotly), correlation hea
 reporting.py        Styled summary tables + LaTeX export
 robustness.py       Landscape convergence + epsilon-robustness diagnostics
 main.py             Orchestrates the full pipeline end-to-end
-run.py              CLI entry-point with --fast / --reps / --epsilon flags
 ```
 
 ## Directory layout
@@ -22,16 +21,18 @@ run.py              CLI entry-point with --fast / --reps / --epsilon flags
 ```
 data/
   processed/
-    2022_4features.csv
+    2025_4features.csv
   socioeconomic data/
     ARI Dependency Rate/
-      By-LGU-ARI-and-Dependencies-2022.xlsx
+      By-LGU-ARI-and-Dependencies-2025.xlsx
     Ethnicity/
       provincial_dominant_ethnicity_psa2020.csv
     Poverty Incidence among Families/
-      Poverty_Incidence_among_Families_2018_to_2023.csv
+      PSA_Full_Year_Poverty_Statistics_-_2018_2021_2023.csv
     Dynasty Proxy Variables/
       DynastyProxyVariables.csv
+    FLEMMS/
+      2024_FLEMMS_Statistical_Tables_Press_Release_2.xlsx
 results/
   figures/                  <- all PNG/JPG plots
   persistence_cache/        <- cached intermediate CSVs (resumable)
@@ -43,49 +44,34 @@ results/
 
 | Dataset | Source year used | Reason |
 |---------|-----------------|--------|
-| Precinct features | 2022 | Actual 2022 election data |
-| IRA dependency | FY2022 (XLSX) | Actual 2022 BLGF data |
-| Poverty incidence | **2021** (primary) | Closest PSA survey year before 2022; 2023 used only as fallback for Maguindanao del Norte/Sur which had no 2021 estimate |
-| Dynasty HHI / GINI | **2019** (proxy) | Last available year in the dynasty dataset; no 2022 data exists |
+| Precinct features | 2025 | Actual 2025 election data |
+| NTA dependency | FY2025 (XLSX) | Actual 2025 BLGF data; column renamed from IRA DEPENDENCY to NTA DEPENDENCY in this release |
+| Poverty incidence | **2023** (primary) | Closest PSA survey year to 2025; 2021 used only as fallback for Maguindanao del Norte/Sur which have no separate 2023 entries |
+| Functional literacy | **2024** (FLEMMS) | New dimension added for 2025; no equivalent source exists in prior pipeline years |
+| Dynasty HHI / GINI | **2019** (proxy) | Last available year in the dynasty dataset; no 2022 or 2025 data exists |
 | Ethnicity | 2020 PSA census | No newer subnational census available |
 
-## Key differences from the 2019 pipeline
+## Key differences from the 2022 pipeline
 
-1. **OAV exclusion is broader.** The 2022 feature file contains both a
-   `Region == 'OAV'` block *and* overseas pseudo-province rows (AMERICAS,
-   ASIA PACIFIC, EUROPE, MIDDLE EAST AND AFRICAS) scattered under
-   non-OAV regions. Both are removed in `preprocessing.py`.
+1. **NTA replaces IRA.** The 2025 BLGF XLSX uses `NTA DEPENDENCY` (National Tax Allotment) in place of the earlier `IRA DEPENDENCY` column. The sheet name also changed from `FY2022` to `ARI 2025`. All other parsing logic — header row index, decimal fraction format, NCR city-to-district redistribution — is identical.
 
-2. **IRA source is XLSX, not CSV.** `By-LGU-ARI-and-Dependencies-2022.xlsx`
-   has a 7-row preamble before the header; IRA DEPENDENCY values are
-   stored as decimal fractions (0–1) rather than percent strings.
-   NCR cities are all listed under PROVINCE = "METRO MANILA" and are
-   redistributed to the four NCR district labels + TAGUIG-PATEROS by
-   LGU NAME in `socioeconomic.py`.
+2. **New covariate: FLEMMS 2024 functional literacy.** The 2024 Functional Literacy, Education and Mass Media Survey provides province-level functional literacy rates (Table 3, both sexes, %). Provinces with Highly Urbanized Cities (HUCs) are listed as separate rows (e.g. `Benguet (Excluding City of Baguio)` + `City of Baguio`); these are averaged back to a single province figure in `socioeconomic.py`. A dedicated `Literacy` BallMapper coloring mode and comparative robustness run are added in `main.py`.
 
-3. **Maguindanao split.** The 2022 election separated MAGUINDANAO into
-   MAGUINDANAO DEL NORTE and MAGUINDANAO DEL SUR.  Socioeconomic
-   datasets (dynasty, ethnicity) still list consolidated MAGUINDANAO;
-   both sub-provinces receive the parent value via replication.
+3. **Non-province artefact rows.** The 2025 feature file contains two rows that do not correspond to geographic provinces and are dropped in `preprocessing.py`:
+   - `LAV` (single-precinct artefact under Region `LAV`)
+   - `SPECIAL GEOGRAPHIC AREA` (59-precinct BARMM administrative zone)
 
-4. **Province label format changed for NCR.** The 2022 feature file uses
-   `NCR - MANILA`, `NCR - SECOND DISTRICT`, etc. (hyphen, no "NATIONAL
-   CAPITAL REGION" prefix), whereas the 2019 file used
-   `NATIONAL CAPITAL REGION - MANILA` etc.  All standardisation maps
-   in `socioeconomic.py` target the 2022 format.
+4. **Updated OAV pseudo-province names.** The 2025 set is `ASIA PACIFIC`, `EUROPE`, `MIDDLE EAST AND AFRICAS`, `NORTH AND LATIN AMERICAS` (note: `NORTH AND LATIN AMERICAS` with trailing `S`, and `ASIA PACIFIC` instead of bare `ASIA`).
+
+5. **NCR label format.** The 2025 feature file uses the full `NATIONAL CAPITAL REGION - X` format (same as 2019 and 2022). There is no `TAGUIG - PATEROS` row — Taguig and Pateros are folded into the NCR Fourth District in the 2025 file.
+
+6. **Hierarchical poverty CSV.** The PSA source file uses a dot-indented hierarchy (`....Province`, `......Sub-province`). Province rows are extracted by matching four or more leading dots, then names are cleaned and standardised. Maguindanao del Norte and del Sur appear at the six-dot level and have no separate 2023 estimates; their 2021 values are used as fallback.
 
 ## Usage
 
-### Quick test
 ```bash
 pip install -r requirements.txt
-python run.py --fast --reps 100
-```
-
-### Full run
-```bash
-python run.py
-# or: python main.py
+python main.py
 ```
 
 ## Controls in `config.py`
@@ -95,9 +81,10 @@ python run.py
 | `RUN_STEPWISE_STABILITY` | `True` | Set `False` to skip landscape convergence (can be slow; results cached after first run) |
 | `NUM_REPETITIONS` | `1000` | Bootstrap reps for epsilon-robustness; use `100` for testing |
 | `BM_EPSILON` | `0.6` | BallMapper radius |
-| `POVERTY_PRIMARY_YEAR` | `"2021 Poverty Incidence"` | Primary poverty column name in CSV |
-| `POVERTY_FALLBACK_YEAR` | `"2023 Poverty Incidence"` | Used when 2021 value is missing |
+| `POVERTY_PRIMARY_YEAR` | `"2023 Poverty Incidence"` | Primary poverty column name |
+| `POVERTY_FALLBACK_YEAR` | `"2021 Poverty Incidence"` | Used when 2023 value is missing (Maguindanao del Norte/Sur) |
 | `DYNASTY_YEAR` | `2019` | Last available year in dynasty dataset |
+| `FLEMMS_COL_LABEL` | `"Functional_Literacy_Rate"` | Column name after loading FLEMMS data |
 
 ## Outputs
 
@@ -110,8 +97,8 @@ python run.py
 - `{col}_numnodes.jpg` / `{col}_avgnodesize.jpg` — comparative robustness
 
 **Tables** (`results/tables/`):
-- `2022_outlier_report.csv` / `.tex`
-- `summary_table_{mode}.csv` / `.tex` (one per covariate mode)
+- `2025_outlier_report.csv` / `.tex`
+- `summary_table_{mode}.csv` / `.tex` (one per covariate mode: Admin_Share, Poverty, Literacy, Ethnicity, Dynasty_HHI, Inequality_GINI)
 - `summary_table_master.csv` — all metrics combined
-- `2022_intersection_matrix_master.csv`
+- `2025_intersection_matrix_master.csv`
 - `provincial_topological_summaries_all.csv`

@@ -89,11 +89,11 @@ def generate_topology_relationship_plots(df_bm_summary: pd.DataFrame, color_col:
         base_filename = FIGURES_DIR / f"scatter_{mode_name}_{safe_metric_name}"
         png_path = f"{base_filename}.png"
         fig.write_image(png_path, scale=2, engine="kaleido")
-        try:
-            display(Image(filename=png_path))
-        except NameError:
-            # display() not available in non-Jupyter environments
-            print(f"  Saved: {png_path}")
+        # try:
+        #     display(Image(filename=png_path))
+        # except NameError:
+        #     # display() not available in non-Jupyter environments
+        #     print(f"  Saved: {png_path}")
 
 
 def generate_correlation_heatmap(df_features: pd.DataFrame) -> None:

@@ -225,7 +225,7 @@ def run_and_visualize_ballmapper(
     if save_dir:
         out_path = Path(save_dir) / f'bm_eps_{eps}_{mode_name}.jpg'
         plt.savefig(out_path, dpi=300, bbox_inches='tight')
-    plt.show()
+    # plt.show()
 
     target_sort_col = (f'Majority {color_col}' if is_categorical else f'Mean {color_col}')
     df_summary = (

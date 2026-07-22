@@ -390,8 +390,8 @@ def merge_socioeconomic_data(df_features: pd.DataFrame,
         else:
             print("[\u2713] Perfect join found for Poverty Data.")
 
-        merged = pd.merge(merged, df_pov[['Province'] + pov_cols],
-                          on='Province', how='left')
+        df_pov = df_pov[['Province'] + pov_cols].drop_duplicates(subset='Province', keep='first')
+        merged = pd.merge(merged, df_pov, on='Province', how='left')
         impute_cols.extend(pov_cols)
 
     # -- IRA Dependency (2022 XLSX) --
@@ -407,6 +407,7 @@ def merge_socioeconomic_data(df_features: pd.DataFrame,
         else:
             print("[\u2713] Perfect join found for IRA Dependency Data.")
 
+        df_ira = df_ira.drop_duplicates(subset='Province', keep='first')
         merged = pd.merge(merged, df_ira, on='Province', how='left')
         impute_cols.extend(ira_cols)
 
@@ -426,6 +427,7 @@ def merge_socioeconomic_data(df_features: pd.DataFrame,
         if 'Region' in df_dyn.columns:
             df_dyn = df_dyn.drop(columns=['Region'])
 
+        df_dyn = df_dyn.drop_duplicates(subset='Province', keep='first')
         merged = pd.merge(merged, df_dyn, on='Province', how='left')
 
         print("-> Imputing missing Dynasty (HHI/GINI) values using local Regional Means...")

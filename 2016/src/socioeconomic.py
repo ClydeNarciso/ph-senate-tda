@@ -125,8 +125,6 @@ def standardize_province_names(series: pd.Series) -> pd.Series:
         'TAWI-TAWI': 'TAWI-TAWI',
         # ---- Isabela City (in poverty CSV, listed under Zamboanga Peninsula) ----
         'ISABELA CITY': 'BASILAN',
-        # ---- Cotabato City (appears in poverty CSV) ----
-        'COTABATO CITY': 'MAGUINDANAO',
     }
     return clean.replace(mapping)
 
