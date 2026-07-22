@@ -1,0 +1,111 @@
+"Table 12. Severity of Poverty with Measures of Precision, by Region and Province:  2018, 2021, and 2023"
+
+"Geolocation";"Estimate (%) 2018";"Estimate (%) 2021";"Estimate (%) 2023"
+"PHILIPPINES r1, 1/, 2/, 3/";0.9;1.0;0.7
+"..National Capital Region (NCR) **, 2/, 3/";0.1;0.1;-
+"....1st District **, 1/";0.1;-;0.1
+"....2nd District **, 2/";0.1;0.1;-
+"....3rd District **, 2/, 3/";0.1;0.1;-
+"....4th District **, 1/, 2/";-;0.1;-
+"..Cordillera Administrative Region (CAR) 1/, 2/, 3/";0.6;0.4;0.2
+"....Abra";1.1;0.9;0.6
+"....Apayao 1/, 3/";1.0;0.2;0.1
+"....Benguet 2/, 3/";0.3;0.2;0.1
+"....Ifugao 3/";0.4;0.3;0.1
+"....Kalinga 2/, 3/";0.5;0.3;0.1
+"....Mt. Province 2/, 3/";1.3;0.9;0.5
+"..Region I (Ilocos Region) 1/, 2/";0.3;0.7;0.5
+"....Ilocos Norte **";0.1;0.0;-
+"....Ilocos Sur 1/, 2/";0.2;0.8;0.2
+"....La Union 1/, 3/";0.1;0.3;0.3
+"....Pangasinan 1/, 2/";0.4;1.0;0.6
+"..Region II (Cagayan Valley) 2/, 3/";0.7;0.8;0.3
+"....Batanes 1/";0.3;0.1;0.2
+"....Cagayan 1/, 3/";0.7;0.4;0.3
+"....Isabela 2/, 3/";0.8;1.1;0.3
+"....Nueva Vizcaya 3/";0.7;0.8;0.4
+"....Quirino 3/";0.4;0.2;0.2
+"..Region III (Central Luzon) 1/, 2/";0.3;0.5;0.3
+"....Aurora 1/, 2/";0.6;1.1;0.5
+"....Bataan";0.3;0.5;0.3
+"....Bulacan 1/, 2/";0.2;0.5;0.2
+"....Nueva Ecija";0.3;0.4;0.2
+"....Pampanga **, 2/";0.1;0.1;-
+"....Tarlac";0.3;0.5;0.5
+"....Zambales 2/";0.9;1.3;0.8
+"..Region IV-A (CALABARZON) 1/, 2/";0.3;0.4;0.2
+"....Batangas 1/";0.4;0.2;0.2
+"....Cavite";0.2;0.4;0.2
+"....Laguna 1/, 3/";0.1;0.4;0.2
+"....Quezon 1/, 2/, 3/";0.6;1.2;0.3
+"....Rizal 2/, 3/";0.2;0.2;0.4
+"..MIMAROPA Region 1/, 3/";0.7;1.2;1.3
+"....Marinduque 2/, 3/";0.7;0.8;0.4
+"....Occidental Mindoro";1.5;2.3;2.2
+"....Oriental Mindoro 1/";0.5;1.3;1.3
+"....Palawan 2/, 3/";0.5;0.5;1.1
+"....Romblon 1/, 2/";1.2;2.3;1.2
+"..Region V (Bicol Region) 1/, 2/";1.2;1.7;1.3
+"....Albay";0.8;1.1;0.9
+"....Camarines Norte";1.4;1.0;1.0
+"....Camarines Sur 1/, 2/";1.3;2.6;1.8
+"....Catanduanes 2/, 3/";0.9;1.0;1.6
+"....Masbate 2/, 3/";1.5;1.4;0.6
+"....Sorsogon";1.2;1.4;1.6
+"..Region VI (Western Visayas) r2, 1/, 2/";0.5;0.9;0.5
+"....Aklan 1/, 2/, 3/";0.4;1.0;0.1
+"....Antique 1/, 2/";0.7;1.5;0.8
+"....Capiz 1/, 3/";0.1;0.2;0.4
+"....Guimaras 2/, 3/";0.3;0.3;0.1
+"....Iloilo 2/";0.6;1.0;0.6
+"..Negros Island Region (NIR) 2/, 3/";1.2;1.3;1.9
+"....Negros Occidental 2/";1.0;1.0;1.7
+"....Negros Oriental";1.8;2.3;2.5
+"....Siquijor 1/, 3/";0.4;0.1;0.1
+"..Region VII (Central Visayas) r2, 1/, 2/";0.7;2.2;0.8
+"....Bohol 1/, 2/";0.8;1.6;1.1
+"....Cebu 1/, 2/";0.7;2.3;0.8
+"..Region VIII (Eastern Visayas) 2/, 3/";1.8;1.8;1.4
+"....Biliran 1/, 2/, 3/";0.6;1.5;0.3
+"....Eastern Samar 1/, 2/, 3/";4.3;2.6;1.6
+"....Leyte";1.5;1.9;1.4
+"....Northern Samar 1/, 2/";1.9;1.0;1.5
+"....Southern Leyte 2/, 3/";0.9;1.0;0.3
+"....Samar";1.6;2.1;2.0
+"..Region IX (Zamboanga Peninsula)";2.1;2.3;2.0
+"....Zamboanga del Norte 2/";3.8;4.8;3.3
+"....Zamboanga del Sur 2/, 3/";1.2;1.0;1.9
+"....Zamboanga Sibugay 2/, 3/";2.0;2.2;0.8
+"....Isabela City 1/, 3/";3.2;0.6;0.3
+"..Region X (Northern Mindanao) 1/, 2/, 3/";1.0;1.5;1.2
+"....Bukidnon 1/";1.3;2.1;1.4
+"....Camiguin 2/, 3/";0.9;1.1;0.4
+"....Lanao del Norte 1/, 3/";1.0;2.4;2.0
+"....Misamis Occidental 2/";1.1;1.0;1.5
+"....Misamis Oriental 2/";0.6;0.8;0.5
+"..Region XI (Davao Region)";0.9;0.8;0.8
+"....Davao del Norte";0.5;0.5;0.5
+"....Davao del Sur";0.6;0.5;0.8
+"....Davao Oriental 1/";1.8;1.2;1.7
+"....Davao de Oro 2/, 3/";1.3;1.2;0.3
+"....Davao Occidental 1/, 2/";2.1;3.2;1.3
+"..Region XII (SOCCSKSARGEN) 2/, 3/, 4/";2.2;1.9;1.4
+"....Cotabato";2.1;2.2;1.5
+"....Sarangani 2/, 3/";5.2;3.7;2.0
+"....South Cotabato 2/";1.2;1.1;0.6
+"....Sultan Kudarat";2.5;2.0;2.3
+"..Region XIII (Caraga) 1/, 2/, 3/";1.8;2.1;0.9
+"....Agusan del Norte 1/, 2/, 3/";1.4;2.1;1.0
+"....Agusan del Sur 2/, 3/";2.4;2.9;1.6
+"....Surigao del Norte 2/, 3/";2.1;1.6;0.3
+"....Surigao del Sur 2/, 3/";1.3;1.8;0.5
+"....Dinagat Islands";1.8;2.0;1.7
+"..Bangsamoro Autonomous Region in Muslim Mindanao (BARMM) r2, 1/, 2/, 3/, 5/";5.4;2.1;1.4
+"....Basilan 1/, 2/, 3/";8.1;4.1;1.9
+"....Lanao del Sur 1/, 2/, 3/";7.8;0.1;0.3
+"....Maguindanao 1/, 3/";3.7;2.1;1.9
+"......Maguindanao del Norte";..;..;1.7
+"......Maguindanao del Sur";..;..;2.0
+"....Sulu r1, 1/, 2/, 3/";7.4;3.3;0.5
+"....Tawi-tawi 1/, 3/";0.6;1.9;2.4
+"....Cotabato City";2.6;2.6;2.2

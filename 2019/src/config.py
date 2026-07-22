@@ -75,6 +75,19 @@ CLR_COLS = ['Admin', 'Opposition', 'Independent', 'Non-Aligned']
 NUM_REPETITIONS = 1000
 BM_EPSILON = 0.6
 
+# Set to False to skip stepwise stability (landscape convergence) analysis.
+# This can be slow; results are cached after the first run.
+# Exposed as --fast in run.py.
+RUN_STEPWISE_STABILITY = True
+
+# Poverty column label used in run.py startup printout.
+# The 2019 pipeline uses 2018 poverty incidence as the closest prior survey.
+POVERTY_COL_LABEL = "2018 Poverty Incidence"
+
+# Dynasty year used in run.py startup printout.
+# 2019 data is actual (election year); the dataset contains 2019 rows.
+DYNASTY_YEAR = 2019
+
 # Colormap used throughout for the admin-share diverging scale
 ADMIN_CMAP = mcolors.LinearSegmentedColormap.from_list(
     "SharpAdminSplit",
