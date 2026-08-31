@@ -13,13 +13,17 @@ import warnings
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 
 import config
 from preprocessing import preprocess_and_clean_data
-from topology import compute_and_save_intervals, extract_provincial_features_4d
+from topology import (
+    compute_and_save_intervals,
+    extract_provincial_features_4d,
+)
 from socioeconomic import merge_socioeconomic_data
-from ballmapper import run_and_visualize_ballmapper, print_intersection_matrix_once
+from ballmapper import run_and_visualize_ballmapper, print_intersection_matrix_once, run_and_visualize_ballmapper_profile
 from visualization import generate_correlation_heatmap, generate_topology_relationship_plots
 from reporting import display_clean_summary, export_summary_to_latex
 from robustness import (
@@ -98,6 +102,7 @@ def main():
     # -------------------------------------------------------------------
     target_modes = ['Admin_Share', 'Poverty', 'Ethnicity', 'Dynasty_HHI', 'Inequality_GINI']
     last_bm_instance = None
+    df_master_summary = None
 
     for mode in target_modes:
         print(f"\n{'='*60}")
@@ -231,6 +236,90 @@ def main():
         cmap_name='plasma',
         invert_colors=False,
     )
+
+    # -------------------------------------------------------------------
+    # 7. Profile BallMapper (Quartile-based Profile coloring + edge labels)
+    # -------------------------------------------------------------------
+    print(f"\n{'='*60}")
+    print(" EXECUTING PIPELINE FOR TARGET MODE: Profile")
+    print(f"{'='*60}")
+
+    if last_bm_instance is not None:
+        df_profile_summary, _ = run_and_visualize_ballmapper_profile(
+            df_features=df_features,
+            X_scaled=X_scaled,
+            eps=config.BM_EPSILON,
+            save_dir=config.FIGURES_DIR,
+        )
+        profile_csv_path = config.TABLES_DIR / 'summary_table_profile.csv'
+        df_profile_summary.to_csv(profile_csv_path, index=False)
+        print(f"-> Saved Profile Summary Table to: {profile_csv_path.name}")
+
+        # Append profile columns to master summary and re-save
+        if df_master_summary is not None and not df_master_summary.empty:
+            profile_cols = df_profile_summary[
+                ['Node ID', 'Quartile-based Profile', 'Profile Description']
+            ]
+            df_master_summary = df_master_summary.merge(
+                profile_cols, on='Node ID', how='left'
+            )
+            df_master_summary.to_csv(master_csv_path, index=False)
+            print(f"-> Updated Master Summary with profile columns: "
+                  f"{master_csv_path.name}")
+
+    # -------------------------------------------------------------------
+    # 8. Persistence Landscape Figures (Individual Provinces)
+    # -------------------------------------------------------------------
+    print(f"\n{'='*60}")
+    print(" GENERATING INDIVIDUAL PERSISTENCE LANDSCAPE FIGURES")
+    print(f"{'='*60}")
+
+    _landscape_dir = config.FIGURES_DIR / "landscapes"
+    _landscape_dir.mkdir(parents=True, exist_ok=True)  # Ensuring the subfolder exists to avoid errors
+
+    try:
+        from gudhi.representations import Landscape as _Landscape
+        _provinces   = list(intervals_dict.keys())
+        _diagrams    = list(intervals_dict.values())
+        
+        # Configure the landscape resolution and layers
+        num_layers = 5
+        res = 200
+        _transformer = _Landscape(num_landscapes=num_layers, resolution=res)
+        
+        # Generate the landscape vectors for all provinces
+        _vecs = _transformer.fit_transform(_diagrams)
+        
+        for prov_idx, prov_name in enumerate(_provinces):
+            prov_vector = _vecs[prov_idx]
+            # Reshape the flat array (1000 items) into 5 distinct landscape layers (200 data points each)
+            reshaped_landscapes = prov_vector.reshape((num_layers, res))
+            
+            fig, ax = plt.subplots(figsize=(8, 5), dpi=150)
+            
+            # The x-axis roughly corresponds to the persistence scale
+            x_vals = np.linspace(0, 1, res) 
+            
+            for i in range(num_layers):
+                ax.plot(x_vals, reshaped_landscapes[i], label=f'Layer {i+1}', linewidth=2)
+                
+            ax.set_title(f"Persistence Landscape: {prov_name}", fontsize=14, fontweight='bold')
+            ax.set_xlabel("Filtration Value", fontsize=12)
+            ax.set_ylabel("Landscape Value", fontsize=12)
+            ax.grid(True, linestyle='--', alpha=0.6)
+            ax.legend()
+            
+            # Save the individual plot
+            safe_prov_name = prov_name.replace(" ", "_").replace("/", "_")
+            plot_path = _landscape_dir / f"{safe_prov_name}_landscape.png"
+            plt.tight_layout()
+            fig.savefig(plot_path)
+            plt.close(fig)
+            
+        print(f"  -> Successfully generated {len(_provinces)} provincial landscape plots in: {_landscape_dir}")
+        
+    except Exception as _exc:
+        print(f"  [!] Landscape generation failed: {_exc}")
 
     return df_features
 

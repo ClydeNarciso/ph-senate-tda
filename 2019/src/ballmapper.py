@@ -13,6 +13,40 @@ from pyballmapper import BallMapper
 
 from config import ADMIN_CMAP, FIGURES_DIR, TABLES_DIR
 
+# ---------------------------------------------------------------------------
+# Quartile-based profile catalogue
+# ---------------------------------------------------------------------------
+# Profile code = "{L2_tier}-{TotalPersistence_tier}"
+#   L2 Norm tier        : H = high (rigid/stable), L = low (fragmented), A = average
+#   Total Pers. tier    : H = high (many long-lived components), L = low, A = average
+# Cut points: Q1 (25th pct) and Q3 (75th pct) across all BallMapper nodes.
+# Methodology verified against collaborator's edited summary_table_master.csv
+# (23/23 perfect match).
+
+PROFILE_DESCRIPTIONS: dict[str, str] = {
+    "A-A": "A-A: Standard Plurality",
+    "A-H": "A-H: Fragile Coalition",
+    "A-L": "A-L: Cohesive Swing-Vote",
+    "H-A": "H-A: Polarized Mainstream",
+    "H-H": "H-H: Hyper-Fragmentation",
+    "H-L": "H-L: Unified Stronghold",
+    "L-A": "L-A: Contested Center",
+    "L-H": "L-H: Hyper-Local Fragmentation",
+    "L-L": "L-L: Competitive/Balanced",
+}
+
+PROFILE_COLOURS: dict[str, str] = {
+    "A-A": "#78909C",
+    "A-H": "#AB47BC",
+    "A-L": "#26A69A",
+    "H-A": "#EF5350",
+    "H-H": "#B71C1C",
+    "H-L": "#FF7043",
+    "L-A": "#42A5F5",
+    "L-H": "#7E57C2",
+    "L-L": "#66BB6A",
+}
+
 
 def _compute_node_dialect_label(df_features: pd.DataFrame, points_in_node: list) -> str:
     """Return 'count/total' provinces sharing the plurality dialect in a node."""
@@ -79,6 +113,144 @@ def print_intersection_matrix_once(bm: BallMapper,
         print(f"-> Saved Intersection Matrix to {out.name}")
 
     return matrix
+
+
+def compute_quartile_profiles(df_summary: pd.DataFrame) -> pd.DataFrame:
+    """Assign a Quartile-based Profile to every BallMapper node."""
+    df = df_summary.copy()
+    l2_col = "Mean L2 Norm (Scaled)"
+    tp_col = "Mean Total Persistence (Scaled)"
+
+    if l2_col not in df.columns or tp_col not in df.columns:
+        print(f"  [!] Cannot compute profiles: missing '{l2_col}' or '{tp_col}'.")
+        df["Quartile-based Profile"] = "N/A"
+        df["Profile Description"]    = "N/A"
+        return df
+
+    q1_l2 = df[l2_col].quantile(0.25)
+    q3_l2 = df[l2_col].quantile(0.75)
+    q1_tp = df[tp_col].quantile(0.25)
+    q3_tp = df[tp_col].quantile(0.75)
+
+    def _tier(val: float, q1: float, q3: float) -> str:
+        if val <= q1:
+            return "L"
+        elif val >= q3:
+            return "H"
+        return "A"
+
+    df["Quartile-based Profile"] = (
+        df[l2_col].apply(lambda x: _tier(x, q1_l2, q3_l2)) + "-" +
+        df[tp_col].apply(lambda x: _tier(x, q1_tp, q3_tp))
+    )
+    df["Profile Description"] = (
+        df["Quartile-based Profile"].map(PROFILE_DESCRIPTIONS).fillna("Unknown")
+    )
+
+    print("\n--- QUARTILE-BASED PROFILE DISTRIBUTION ---")
+    for code, cnt in df["Quartile-based Profile"].value_counts().items():
+        desc = PROFILE_DESCRIPTIONS.get(code, "")
+        print(f"  {code}  ({cnt} node{'s' if cnt != 1 else ''})  —  {desc}")
+    print(f"  Cut points:  L2 Q1={q1_l2:.3f}, Q3={q3_l2:.3f} | "
+          f"TotPers Q1={q1_tp:.3f}, Q3={q3_tp:.3f}")
+
+    return df
+
+
+def run_and_visualize_ballmapper_profile(
+    df_features: pd.DataFrame,
+    X_scaled: np.ndarray,
+    eps: float,
+    save_dir: Path = FIGURES_DIR,
+) -> tuple[pd.DataFrame, BallMapper]:
+    """BallMapper graph coloured by Quartile-based Profile.
+
+    Nodes are coloured according to the predefined PROFILE_COLOURS dict
+    and styled to match the standard categorical BallMapper plots.
+    """
+    print("\n--- RUNNING PROFILE BALLMAPPER ---")
+    bm = BallMapper(X=X_scaled, eps=eps)
+    nodes_list = list(bm.Graph.nodes)
+
+    # Node summary (topological features only)
+    rows = []
+    for node in nodes_list:
+        pts    = bm.points_covered_by_landmarks[node]
+        df_pts = df_features.iloc[pts]
+        rows.append({
+            "Node ID":                          node,
+            "No. Provinces":                    len(pts),
+            "Mean L2 Norm (Scaled)":            df_pts["H0_L2_Norm_scaled"].mean(),
+            "Mean Total Persistence (Scaled)":  df_pts["H0_Total_Persistence_scaled"].mean(),
+            "Mean Entropy (Scaled)":            df_pts["H0_PersistentEntropy_scaled"].mean(),
+            "Provinces Included":               ", ".join(df_pts["Province"].tolist()),
+            "Provinces (Region)":               ", ".join(
+                f"{r['Province']} ({r['Region']})"
+                for _, r in df_pts.iterrows()
+            ),
+        })
+    df_summary = pd.DataFrame(rows)
+    df_summary = compute_quartile_profiles(df_summary)
+
+    # Standard layout matching the other graphs
+    pos = nx.spring_layout(
+        bm.Graph, seed=50, k=1.8, iterations=150, scale=2.5
+    )
+
+    profile_map = dict(zip(df_summary["Node ID"], df_summary["Quartile-based Profile"]))
+    present = sorted(df_summary["Quartile-based Profile"].unique())
+
+    node_colours = [
+        PROFILE_COLOURS.get(profile_map.get(n, ""), "#E0E0E0")
+        for n in nodes_list
+    ]
+    node_sizes = [
+        400 + len(bm.points_covered_by_landmarks[n]) * 150
+        for n in nodes_list
+    ]
+    node_labels = {n: f"{n}\n{profile_map.get(n, '?')}" for n in nodes_list}
+
+    # Draw
+    fig, ax = plt.subplots(figsize=(16, 12), dpi=300)
+    nx.draw_networkx_edges(
+        bm.Graph, pos, ax=ax, alpha=0.5, width=2.5, edge_color="#444444"
+    )
+    nx.draw_networkx_nodes(
+        bm.Graph, pos, ax=ax,
+        node_size=node_sizes, node_color=node_colours,
+        edgecolors='black', linewidths=1.5, alpha=0.95,
+    )
+    nx.draw_networkx_labels(
+        bm.Graph, pos, labels=node_labels, ax=ax,
+        font_size=12, font_family='serif', font_weight='bold',
+    )
+    
+    ax.axis("off")
+
+    # Match categorical legend style
+    legend_handles = [
+        mpatches.Patch(
+            facecolor=PROFILE_COLOURS.get(p, "#E0E0E0"),
+            edgecolor="black", linewidth=1.0,
+            label=PROFILE_DESCRIPTIONS.get(p, p),
+        )
+        for p in present
+    ]
+    ax.legend(
+        handles=legend_handles,
+        loc='upper right',
+        bbox_to_anchor=(1.2, 1),
+        title="Quartile-based Profile",
+        title_fontproperties={'family': 'serif', 'size': 12, 'weight': 'bold'},
+        prop={'family': 'serif', 'size': 11},
+    )
+
+    if save_dir:
+        out = Path(save_dir) / f"bm_eps_{eps}_profile.jpg"
+        plt.savefig(out, dpi=300, bbox_inches="tight")
+        print(f"-> Saved: {out.name}")
+
+    return df_summary, bm
 
 
 def run_and_visualize_ballmapper(
@@ -220,7 +392,6 @@ def run_and_visualize_ballmapper(
     if save_dir:
         out_path = Path(save_dir) / f'bm_eps_{eps}_{mode_name}.jpg'
         plt.savefig(out_path, dpi=300, bbox_inches='tight')
-    plt.show()
 
     target_sort_col = (f'Majority {color_col}' if is_categorical else f'Mean {color_col}')
     df_summary = (
@@ -228,4 +399,5 @@ def run_and_visualize_ballmapper(
         .sort_values(target_sort_col, ascending=False)
         .reset_index(drop=True)
     )
+    df_summary = compute_quartile_profiles(df_summary)
     return df_summary, bm

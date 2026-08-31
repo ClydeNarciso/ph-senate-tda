@@ -72,11 +72,16 @@ def preprocess_and_clean_data(df_raw: pd.DataFrame,
         .reset_index(drop=True)
     )
     print("\n--- OUTLIER REMOVAL REPORT (TOP 5) ---")
-    display(
+    styled_report = (
         df_report.head(5)
         .style.format({'% Removed': '{:.2f}%'})
         .background_gradient(cmap='Reds', subset=['% Removed'])
     )
+    try:
+        display(styled_report)
+    except NameError:
+        # display() not available in non-Jupyter environments
+        print(df_report.head(5).to_string())
 
     df_report.to_csv(TABLES_DIR / '2019_outlier_report.csv', index=False)
     with open(TABLES_DIR / '2019_outlier_report.tex', 'w') as f:

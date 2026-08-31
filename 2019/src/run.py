@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Command-line interface for the 2022 analysis pipeline.
+Command-line interface for the 2019 analysis pipeline.
 
 Usage:
     python run.py                   # Full run (all diagnostics)
@@ -18,7 +18,7 @@ import main as pipeline_main
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Run the 2022 electoral topology / socioeconomic analysis pipeline."
+        description="Run the 2019 electoral topology / socioeconomic analysis pipeline."
     )
     parser.add_argument(
         '--fast', action='store_true',
@@ -48,7 +48,7 @@ def main():
         config.BM_EPSILON = args.epsilon
         print(f"[config] BM_EPSILON = {args.epsilon}")
 
-    print(f"\nStarting 2022 pipeline with:")
+    print(f"\nStarting 2019 pipeline with:")
     print(f"  Poverty year      : {config.POVERTY_COL_LABEL}")
     print(f"  Dynasty proxy year: {config.DYNASTY_YEAR}")
     print(f"  RUN_STEPWISE_STABILITY: {config.RUN_STEPWISE_STABILITY}")

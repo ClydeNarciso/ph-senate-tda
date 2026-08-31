@@ -1,5 +1,10 @@
 """TDA feature extraction: H0 persistence intervals (Vietoris-Rips) per
-province, and their summary into scalar 4D topological features."""
+province, and their summary into scalar 4D topological features.
+"""
+from __future__ import annotations
+
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import gudhi as gd
@@ -8,6 +13,17 @@ from persim.persistent_entropy import persistent_entropy
 
 from config import INTERVALS_CACHE_PATH, TOPOLOGY_RESULTS_PATH
 
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+
+NUM_LANDSCAPES = 5
+RESOLUTION     = 200
+
+
+# ---------------------------------------------------------------------------
+# Interval computation
+# ---------------------------------------------------------------------------
 
 def compute_and_save_intervals(df_clean: pd.DataFrame,
                                 cols: list) -> dict:
@@ -36,7 +52,6 @@ def compute_and_save_intervals(df_clean: pd.DataFrame,
             if len(finite_h0) > 0:
                 intervals_dict[province] = finite_h0
 
-    # Flatten dict of Nx2 arrays to a long-format CSV: Province | Birth | Death
     rows = [
         {'Province': province, 'Birth': float(b), 'Death': float(d)}
         for province, arr in intervals_dict.items()
@@ -46,10 +61,23 @@ def compute_and_save_intervals(df_clean: pd.DataFrame,
     return intervals_dict
 
 
-def extract_provincial_features_4d(df_clean: pd.DataFrame,
-                                    intervals_dict: dict) -> pd.DataFrame:
-    """Summarise each province's H0 diagram into scalar TDA features."""
+# ---------------------------------------------------------------------------
+# Feature extraction
+# ---------------------------------------------------------------------------
 
+def extract_provincial_features_4d(
+    df_clean: pd.DataFrame,
+    intervals_dict: dict,
+) -> pd.DataFrame:
+    """Summarise each province's H0 diagram into scalar TDA features.
+
+    Parameters
+    ----------
+    df_clean : pd.DataFrame
+        Cleaned precinct-level DataFrame.
+    intervals_dict : dict
+        {province: finite_H0_diagram} from compute_and_save_intervals().
+    """
     if TOPOLOGY_RESULTS_PATH.exists():
         df_features = pd.read_csv(TOPOLOGY_RESULTS_PATH)
         if 'H0_Total_Persistence' in df_features.columns:
@@ -57,26 +85,34 @@ def extract_provincial_features_4d(df_clean: pd.DataFrame,
             return df_features
 
     print("--- CALCULATING 4D TOPOLOGICAL SUMMARIES ---")
-    provinces = list(intervals_dict.keys())
+    provinces              = list(intervals_dict.keys())
     all_finite_h0_diagrams = list(intervals_dict.values())
 
-    landscape_transformer = Landscape(num_landscapes=5, resolution=200)
+    # Fit ONE global transformer — reuse its vectors for scalar features
+    landscape_transformer = Landscape(
+        num_landscapes=NUM_LANDSCAPES, resolution=RESOLUTION
+    )
     global_landscapes = landscape_transformer.fit_transform(all_finite_h0_diagrams)
 
     rips_stats = []
     for idx, province in enumerate(provinces):
         finite_h0 = all_finite_h0_diagrams[idx]
-        df_prov = df_clean[df_clean['Province'] == province]
+        df_prov   = df_clean[df_clean['Province'] == province]
 
         rips_stats.append({
-            'Province': province,
-            'Region': df_prov['Region'].iloc[0],
-            'Mean_Admin_Prop': df_prov['Admin_prop'].mean(),
-            'H0_PersistentEntropy': persistent_entropy(finite_h0, normalize=True)[0],
-            'H0_L2_Norm': np.linalg.norm(global_landscapes[idx]),
-            'H0_Total_Persistence': float(np.sum(finite_h0[:, 1] - finite_h0[:, 0])),
+            'Province':            province,
+            'Region':              df_prov['Region'].iloc[0],
+            'Mean_Admin_Prop':     df_prov['Admin_prop'].mean(),
+            'H0_PersistentEntropy': persistent_entropy(
+                finite_h0, normalize=True
+            )[0],
+            'H0_L2_Norm':          np.linalg.norm(global_landscapes[idx]),
+            'H0_Total_Persistence': float(
+                np.sum(finite_h0[:, 1] - finite_h0[:, 0])
+            ),
         })
 
     df_features = pd.DataFrame(rips_stats)
     df_features.to_csv(TOPOLOGY_RESULTS_PATH, index=False)
+
     return df_features

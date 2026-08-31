@@ -88,7 +88,12 @@ def generate_topology_relationship_plots(df_bm_summary: pd.DataFrame, color_col:
         safe_metric_name = plot_title.lower().replace(' ', '_')
         base_filename = FIGURES_DIR / f"scatter_{mode_name}_{safe_metric_name}"
         png_path = f"{base_filename}.png"
-        fig.write_image(png_path, scale=2, engine="kaleido")
+        
+        try:
+            fig.write_image(png_path, scale=2, engine="kaleido")
+        except ValueError:
+            fig.write_image(png_path, scale=2)
+            
         display(Image(filename=png_path))
 
 
@@ -114,4 +119,4 @@ def generate_correlation_heatmap(df_features: pd.DataFrame) -> None:
     ax.set_yticklabels(clean_labels, rotation=0, fontweight='bold')
     plt.tight_layout()
     plt.savefig(FIGURES_DIR / 'feature_correlation_heatmap.png', dpi=150, bbox_inches='tight')
-    plt.show()
+    # plt.show()

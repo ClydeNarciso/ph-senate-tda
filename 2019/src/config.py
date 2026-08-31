@@ -28,11 +28,13 @@ RESULTS_DIR = BASE_DIR / 'results'
 results_dir.mkdir(parents=True, exist_ok=True)
 
 FIGURES_DIR = RESULTS_DIR / "figures"
+LANDSCAPES_DIR = FIGURES_DIR / "landscapes"
 CACHE_DIR = RESULTS_DIR / "persistence_cache"
 COMPARATIVE_CACHE_DIR = CACHE_DIR / "comparative_robustness"
 TABLES_DIR = RESULTS_DIR / "tables"
 
-for _dir in (FIGURES_DIR, CACHE_DIR, COMPARATIVE_CACHE_DIR, TABLES_DIR):
+# Add LANDSCAPES_DIR to the tuple
+for _dir in (FIGURES_DIR, LANDSCAPES_DIR, CACHE_DIR, COMPARATIVE_CACHE_DIR, TABLES_DIR):
     _dir.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------
