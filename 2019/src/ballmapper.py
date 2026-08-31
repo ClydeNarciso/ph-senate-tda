@@ -163,11 +163,7 @@ def run_and_visualize_ballmapper_profile(
     eps: float,
     save_dir: Path = FIGURES_DIR,
 ) -> tuple[pd.DataFrame, BallMapper]:
-    """BallMapper graph coloured by Quartile-based Profile.
-
-    Nodes are coloured according to the predefined PROFILE_COLOURS dict
-    and styled to match the standard categorical BallMapper plots.
-    """
+    """BallMapper graph coloured by Quartile-based Profile."""
     print("\n--- RUNNING PROFILE BALLMAPPER ---")
     bm = BallMapper(X=X_scaled, eps=eps)
     nodes_list = list(bm.Graph.nodes)
@@ -210,6 +206,15 @@ def run_and_visualize_ballmapper_profile(
     ]
     node_labels = {n: f"{n}\n{profile_map.get(n, '?')}" for n in nodes_list}
 
+    # Calculate edge intersection labels
+    edge_labels = {}
+    for i, j in bm.Graph.edges():
+        pts_i = set(df_features.iloc[bm.points_covered_by_landmarks[i]]["Province"])
+        pts_j = set(df_features.iloc[bm.points_covered_by_landmarks[j]]["Province"])
+        shared = pts_i & pts_j
+        if shared:
+            edge_labels[(i, j)] = str(len(shared))
+
     # Draw
     fig, ax = plt.subplots(figsize=(16, 12), dpi=300)
     nx.draw_networkx_edges(
@@ -224,6 +229,13 @@ def run_and_visualize_ballmapper_profile(
         bm.Graph, pos, labels=node_labels, ax=ax,
         font_size=12, font_family='serif', font_weight='bold',
     )
+    
+    if edge_labels:
+        nx.draw_networkx_edge_labels(
+            bm.Graph, pos, edge_labels=edge_labels, ax=ax,
+            font_size=9, font_family='serif', font_color='black',
+            bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="#cccccc", alpha=0.9)
+        )
     
     ax.axis("off")
 
@@ -371,6 +383,23 @@ def run_and_visualize_ballmapper(
         bm.Graph, pos, ax=ax,
         font_size=12, font_family='serif', font_weight='bold',
     )
+
+    # Calculate and draw edge intersection labels for the standard graphs too
+    edge_labels = {}
+    for i, j in bm.Graph.edges():
+        pts_i = set(df_features.iloc[bm.points_covered_by_landmarks[i]]["Province"])
+        pts_j = set(df_features.iloc[bm.points_covered_by_landmarks[j]]["Province"])
+        shared = pts_i & pts_j
+        if shared:
+            edge_labels[(i, j)] = str(len(shared))
+            
+    if edge_labels:
+        nx.draw_networkx_edge_labels(
+            bm.Graph, pos, edge_labels=edge_labels, ax=ax,
+            font_size=9, font_family='serif', font_color='black',
+            bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="#cccccc", alpha=0.9)
+        )
+
     ax.axis('off')
 
     if is_categorical:
